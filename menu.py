@@ -15,49 +15,68 @@ def chequeo_cedula(cedula):
         return False
 
 def chequeo_fecha_de_nacimiento(fecha_de_nacimiento_empleado):
-    formato = "%d/%m/%Y"
+    formato = '%d-%m-%Y'
     try:
-        datetime.strptime(fecha_de_nacimiento_empleado, formato)
+        datetime.datetime.strptime(fecha_de_nacimiento_empleado, formato)
         return True
     except:
         print ("Uno o más datos ingresados son inválidos, intente nuevamente") 
         return False 
 
 
-def alta_empleados(lista_empleados):
-    cedula_empleado = input ("Ingrese pasaporte: ")
-    if chequeo_cedula(cedula_empleado):
-        nombre_empleado = input ("Ingrese nombre: ")
-        if isinstance(nombre_empleado,str):
-            fecha_de_nacimiento_empleado = input("Ingrese fecha de nacimiento (DD/MM/AAAA): ")
-            if chequeo_fecha_de_nacimiento(fecha_de_nacimiento_empleado):       
-                pais_de_nacimiento_empleado = input ("Ingrese país del nacimiento: ")       
-                if pais_de_nacimiento_empleado.isalpha():
-                    salario_empleado = input ("Ingrese salario del empleado: ")
-                    if salario_empleado.int():
-                        tipo_empleado = input ("Ingrese que tipo de empleado es: ")
-                        if tipo_empleado == "piloto":
-                            empleado = Piloto(nombre_empleado,cedula_empleado, fecha_de_nacimiento_empleado, pais_de_nacimiento_empleado, salario_empleado, tipo_empleado)
-                            lista_empleados.append(empleado)
-                            or tipo_empleado == "mecanico" or tipo_empleado == "director de equipo":
-                            
-                            empleado = Empleado(nombre_empleado,cedula_empleado, fecha_de_nacimiento_empleado, pais_de_nacimiento_empleado, salario_empleado, tipo_empleado)
-                            lista_empleados.append(empleado)
-                            print("Empleado Creado")
-                    
-                        else:
-                             print ("El tipo de empleado no existe")
+def alta_empleado(lista_empleados):
+    cedula_empleado = input ("Ingrese cedula: ")
+    if not chequeo_cedula(cedula_empleado):
+        raise Exception("Error, la cedula debe tener solo numeros y deben ser 8")
+    nombre_empleado = input ("Ingrese nombre: ")
+    if not isinstance(nombre_empleado,str):
+        raise Exception("El nombre es incorrecto")
+    fecha_de_nacimiento_empleado = input("Ingrese fecha de nacimiento (DD-MM-AAAA): ")
+    if not chequeo_fecha_de_nacimiento(fecha_de_nacimiento_empleado):
+        raise Exception("La fecha es incorrecta")     
+    pais_de_nacimiento_empleado = input("Ingrese país del nacimiento: ")       
+    if not pais_de_nacimiento_empleado.isalpha():
+        raise Exception("El país es incorrecto")
+    salario_empleado = int(input("Ingrese salario del empleado: "))
+    if not isinstance(salario_empleado,int):
+        raise Exception("El salario es incorrecto")
+    tipo_empleado = int(input("Ingrese que tipo de empleado es: "))
+    if not tipo_empleado == 1 or tipo_empleado == 2 or tipo_empleado == 3 or tipo_empleado == 4:
+        raise Exception("El tipo de empleado no existe")
+    if tipo_empleado == 1:
+        score_piloto = int(input("Ingrese el score del piloto: "))
+        if not score_piloto >= 1 and score_piloto <= 99:
+            raise Exception("El score esta fuera del rango")
+        nro_auto = int(input("Ingrese el numero del auto: "))
+        if not nro_auto >= 1 and nro_auto <=99:
+            raise Exception("El numero del auto esta fuera del rango")
+        puntaje = int(input("Ingrese el puntaje del piloto: "))
+        lesion = bool(input("Ingrese si el piloto presenta alguna lesión: "))
+        if lesion == True:
+            print("El piloto no presenta ninguna lesión")
+        else: 
+            print("El piloto está lesionado")
+            if lesion is not bool:
+                raise Exception("El dato lesión es incorrecto")
+    tipo_empleado = Piloto(nombre_empleado,cedula_empleado, fecha_de_nacimiento_empleado, pais_de_nacimiento_empleado, salario_empleado, score_piloto, nro_auto, puntaje, lesion)
+    lista_empleados.append(tipo_empleado)
+    print("El piloto fue creado")
+    if tipo_empleado == 3:
+        score_mecanico = int(input("Ingrese el score del mecanico"))
+        if not score_mecanico >= 1 and score_mecanico <= 99:
+            raise Exception("El score no entra en el rango")
+    tipo_empleado = Mecanico (nombre_empleado, cedula_empleado, fecha_de_nacimiento_empleado, pais_de_nacimiento_empleado, salario_empleado, tipo_empleado, score_mecanico)
+    lista_empleados.append(tipo_empleado)
+    print("El mecanico fue creado")
+    if tipo_empleado == 4:
+        tipo_empleado = DirectorDeEquipo(nombre_empleado, cedula_empleado, fecha_de_nacimiento_empleado, pais_de_nacimiento_empleado, salario_empleado)
+        print("El director de equipo fue creado")
+        
 
-                    else: 
-                        print ("El salario es incorrecto") 
-                else: 
-                    print ("El país es incorrecto")           
-            else:
-                print ("La fecha es incorrecta")
-        else:
-            print ("El nombre es incorrecto")            
-    else:
-        print("Error, la cedula debe tener solo numeros y deben ser 8")
+       
+  
+               
+
     
 def existe_empleado(cedula):
     for j in lista_empleados:
@@ -70,13 +89,15 @@ def obtener_empleados(cedula):
         if j.cedula == cedula:
             return j
     return None
+
+
     
     
 def alta_auto(lista_autos):
     modelo_de_auto = input("Ingrese el modelo del auto: ")
     if isinstance(modelo_de_auto,str):
         anio_de_auto = int(input("Ingrese año del auto: "))
-        if isinstance(anio_de_auto,str):
+        if isinstance(anio_de_auto,int):
             score_del_auto = int(input ("Ingrese score del auto: "))
             if score_del_auto >= 1 and score_del_auto <= 99:
                 auto = Auto(modelo_de_auto, anio_de_auto, score_del_auto)
@@ -129,13 +150,13 @@ while menu:
     print ("Seleccione la opción del menú: ")
     print ("1. Alta de Empleado")
     print ("2. Alta de Auto")
-    print ("3. Alto de Equipo")
+    print ("3. Alta de Equipo")
     print ("3. Simular Carrera")
     print ("5. Realizar Consultas")
     print ("6. Finalizar Programa")
     opcion = int(input())
     if opcion == 1:
-        alta_empleados(lista_empleados)
+        alta_empleado(lista_empleados)
     elif opcion == 2:
         alta_auto(lista_autos)
     elif opcion == 3:
