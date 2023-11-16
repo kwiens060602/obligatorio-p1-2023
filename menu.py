@@ -10,6 +10,9 @@ from exceptions.informacion_invalida import InformacionInvalida
 lista_empleados = []
 lista_autos = []
 lista_equipos = []
+lista_lesionados = []
+lista_pilotos = []
+lista_abandonos = []
 
 def chequeo_cedula(cedula):
     if len(cedula) == 8 and cedula.isnumeric():
@@ -73,8 +76,9 @@ def alta_empleado(lista_empleados):
         nro_auto = int(input("Ingrese el numero del auto: "))
         if not (nro_auto >= 1 and nro_auto <=99):
             raise InformacionInvalida("El numero del auto esta fuera del rango")
-        tipo_empleado = Piloto(nombre_empleado,cedula_empleado, fecha_de_nacimiento_empleado, pais_de_nacimiento_empleado, salario_empleado, score_piloto, nro_auto, lesion=False, suplente= True)
+        tipo_empleado = Piloto(nombre_empleado,cedula_empleado, fecha_de_nacimiento_empleado, pais_de_nacimiento_empleado, salario_empleado, score_piloto, nro_auto, lesion=False, suplente= False)
         lista_empleados.append(tipo_empleado)
+        lista_pilotos.append(tipo_empleado)
         print("El piloto fue creado")
     elif tipo_empleado == 2:
         score_piloto = int(input("Ingrese el score del piloto: "))
@@ -238,11 +242,45 @@ def alta_equipo (lista_equipos):
             
     print("El equipo fue creado con exito")
 
-def simular_carre
 
 
 
 
+
+
+
+def simular_carrera(lista_lesionados, lista_abandonos, lista_error_pits):
+    termino = False
+    while termino == False:
+        
+
+        nro_auto_lesionado = int(input("Ingresar el numero de auto del piloto lesionado: "))
+        for i in lista_pilotos:
+            if i.nro_auto == nro_auto_lesionado:
+                lesionado = i
+        lesionado.lesion == True
+        lista_lesionados.append(lesionado)
+
+
+        nro_auto_abandono = input("Ingrese el numero del auto que abandono: ")
+        datos = nro_auto_abandono.split(',')
+    
+        for j in lista_pilotos:
+            if j.nro_auto == datos:
+                abandono = j
+        lista_abandonos.append(abandono) 
+        
+        
+        nro_auto_error = int(input("Ingrese el numero de auto de todos los pilotos que cometen error en pits: "))
+
+
+
+
+
+
+
+      
+    
 
 
 
