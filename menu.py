@@ -7,12 +7,16 @@ from entities.director_equipo import DirectorDeEquipo
 from entities.equipo import Equipo
 from exceptions.informacion_invalida import InformacionInvalida
 
+
 lista_empleados = []
 lista_autos = []
 lista_equipos = []
 lista_lesionados = []
 lista_pilotos = []
 lista_abandonos = []
+lista_error_pits = []
+lista_penalidades = []
+
 
 def chequeo_cedula(cedula):
     if len(cedula) == 8 and cedula.isnumeric():
@@ -69,6 +73,7 @@ def alta_empleado(lista_empleados):
     tipo_empleado = int(input("Ingrese que tipo de empleado es: "))
     if not (tipo_empleado == 1 or tipo_empleado == 2 or tipo_empleado == 3 or tipo_empleado == 4):
         raise InformacionInvalida("El tipo de empleado no existe")
+    
     if tipo_empleado == 1:
         score_piloto = int(input("Ingrese el score del piloto: "))
         if not score_piloto >= 1 and score_piloto <= 99:
@@ -78,8 +83,8 @@ def alta_empleado(lista_empleados):
             raise InformacionInvalida("El numero del auto esta fuera del rango")
         tipo_empleado = Piloto(nombre_empleado,cedula_empleado, fecha_de_nacimiento_empleado, pais_de_nacimiento_empleado, salario_empleado, score_piloto, nro_auto, lesion=False, suplente= False)
         lista_empleados.append(tipo_empleado)
-        lista_pilotos.append(tipo_empleado)
         print("El piloto fue creado")
+
     elif tipo_empleado == 2:
         score_piloto = int(input("Ingrese el score del piloto: "))
         if not score_piloto >= 1 and score_piloto <= 99:
@@ -90,6 +95,7 @@ def alta_empleado(lista_empleados):
         tipo_empleado = Piloto(nombre_empleado,cedula_empleado, fecha_de_nacimiento_empleado, pais_de_nacimiento_empleado, salario_empleado, score_piloto, nro_auto, lesion=False, suplente= True)
         lista_empleados.append(tipo_empleado)
         print("El piloto fue creado")
+
     elif tipo_empleado == 3:
         score_mecanico = int(input("Ingrese el score del mecanico: "))
         if not score_mecanico >= 1 and score_mecanico <= 99:
@@ -97,10 +103,12 @@ def alta_empleado(lista_empleados):
         tipo_empleado = Mecanico (nombre_empleado, cedula_empleado, fecha_de_nacimiento_empleado, pais_de_nacimiento_empleado, salario_empleado, score_mecanico)
         lista_empleados.append(tipo_empleado)
         print("El mecanico fue creado")
+
     if tipo_empleado == 4:
         tipo_empleado = DirectorDeEquipo(nombre_empleado, cedula_empleado, fecha_de_nacimiento_empleado, pais_de_nacimiento_empleado, salario_empleado)
         lista_empleados.append(tipo_empleado)
         print("El director de equipo fue creado")
+
 
 
 def existe_empleado(cedula):
@@ -127,6 +135,8 @@ def obtener_autos(modelo):
             return True
     return False    
     
+
+
 def alta_auto(lista_autos):
     modelo_de_auto = input("Ingrese el modelo del auto: ")
     if isinstance(modelo_de_auto,str):
@@ -143,6 +153,8 @@ def alta_auto(lista_autos):
             print("El año del auto es incorrecto")
     else:
         print("El modelo del auto es incorrecto")
+
+
 
 def validar_equipo (lista_empleados, tipo_empleado) :
         piloto = 0
@@ -162,13 +174,12 @@ def validar_equipo (lista_empleados, tipo_empleado) :
 
 
 
-
 def alta_equipo (lista_equipos):
     #hacer las validaciones
     nombre_equipo = input("Ingrese nombre del equipo: ")
     pais_equipo = input("Ingrese el pais del equipo: ")
     anio_equipo = input("Ingrese el año del equipo: ")
-    #
+    
     empleados_equipo = []
     veces = 0
     pilotos = 0
@@ -185,11 +196,12 @@ def alta_equipo (lista_equipos):
                 else:
                     empleados_equipo.append(empleado)
                     pilotos = pilotos + 1
+                    lista_pilotos.append(empleado)
             else:
                 print("Ese empleado no es un piloto")
         else:
             print("Ese empleado no existe")
-   
+
    
     while mecanicos < 8:
         cedula = input("Ingrese cedula del mecanico: ")
@@ -221,6 +233,7 @@ def alta_equipo (lista_equipos):
                 print("Ese empleado no es un director de equipo")
         else:
             print("Ese empleado no existe")
+
    
     while veces < 1:
         modelo = input("Ingrese el modelo del auto del equipo")
@@ -247,31 +260,83 @@ def alta_equipo (lista_equipos):
 
 
 
+def simular_carrera(lista_lesionados, lista_abandonos, lista_error_pits, lista_penalidades):
 
 
-def simular_carrera(lista_lesionados, lista_abandonos, lista_error_pits):
-    termino = False
-    while termino == False:
-        
-
+    print("Si ya ingresó todos los pilotos lesionados, ingrese el numero 0")
+    terminado = True
+    while terminado:
         nro_auto_lesionado = int(input("Ingresar el numero de auto del piloto lesionado: "))
-        for i in lista_pilotos:
-            if i.nro_auto == nro_auto_lesionado:
-                lesionado = i
-        lesionado.lesion == True
-        lista_lesionados.append(lesionado)
+        if nro_auto_lesionado == 0:
+            terminado = False
+        else:
+            for i in lista_pilotos:
+                if i.nro_auto == nro_auto_lesionado:
+                    lesionado = lista_pilotos[i]
+                    lesionado.lesion = True
+                    lista_lesionados.append(lesionado)
 
 
-        nro_auto_abandono = input("Ingrese el numero del auto que abandono: ")
-        datos = nro_auto_abandono.split(',')
     
-        for j in lista_pilotos:
-            if j.nro_auto == datos:
-                abandono = j
-        lista_abandonos.append(abandono) 
-        
-        
-        nro_auto_error = int(input("Ingrese el numero de auto de todos los pilotos que cometen error en pits: "))
+    nro_auto_abandono = input("Ingrese los numeros de los autos que abandonaron separados por una coma y sin espacios: ")
+    lista_strings = nro_auto_abandono.split(",")
+
+    lista_integers = []
+    
+    for i in range(len(lista_strings)):
+        numero = int(lista_strings[i])
+        lista_integers.append(numero)
+
+    for i in lista_pilotos:
+        for j in lista_integers:
+            if i.nro_auto == lista_integers[j]:
+                abandono = lista_pilotos[i]
+                abandono.lesion = True
+                lista_abandonos.append(abandono)
+
+
+    
+    nro_auto_error = int(input("Ingrese el numero de auto de todos los pilotos que cometen error en pits: "))
+    for i in lista_pilotos:
+        if i.nro_auto == nro_auto_error:
+            errores = lista_pilotos[i]
+            lista_error_pits.append(errores)
+
+    
+    nro_auto_penalidad = int(input("Ingrese el numero de auto de todos los pilotos que reciben penalidad: "))
+    for i in lista_pilotos:
+        if i.nro_auto == nro_auto_penalidad:
+            penalizado = lista_pilotos[i]
+            lista_penalidades.append(penalizado)
+
+
+    
+    lista_puntajes = []
+    for i in lista_equipos:
+        lista_puntaje_equipo = []
+        nombre = i.nombre
+        lista_puntaje_equipo.append(nombre)
+        puntaje_sin_restar = 0
+        for j in i.empleados():
+            if isinstance(j, Piloto):
+                puntaje_piloto = j.score_piloto
+                puntaje_sin_restar = puntaje_sin_restar + puntaje_piloto
+            elif isinstance(j, Mecanico):
+                puntaje_mecanico = j.score_mecanico
+                puntaje_sin_restar = puntaje_sin_restar + puntaje_mecanico
+            else:
+                continue
+
+
+
+
+
+    
+
+
+
+
+
 
 
 
@@ -287,6 +352,7 @@ def simular_carrera(lista_lesionados, lista_abandonos, lista_error_pits):
 
 menu = True 
 while menu:
+    print(" ")
     print ("Menú Principal")
     print ("Seleccione la opción del menú: ")
     print ("1. Alta de Empleado")
@@ -303,7 +369,7 @@ while menu:
     elif opcion == 3:
         alta_equipo(lista_equipos)
     elif opcion == 4:
-        pass
+        simular_carrera(lista_lesionados, lista_abandonos, lista_error_pits, lista_penalidades)
     elif opcion == 5:
         menu = False
     elif opcion == 6:
