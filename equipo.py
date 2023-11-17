@@ -23,6 +23,10 @@ class Equipo:
     @property
     def auto(self):
         return self._auto   
+    
+    @property
+    def empleados(self):
+        return self._empleados
 
     def agregar_empleado(self, empleado):
         self._empleados.append(empleado)
