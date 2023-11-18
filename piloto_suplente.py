@@ -1,6 +1,6 @@
 from entities.empleado import Empleado
-class Piloto(Empleado):
-    def __init__(self, nombre_empleado, cedula_empleado, fecha_de_nacimiento_empleado, pais_de_nacimiento_empleado, salario_empleado, score_piloto, nro_auto, puntaje_carrera, lesion=False, suplente=False):
+class PilotoSuplente(Empleado):
+    def __init__(self, nombre_empleado, cedula_empleado, fecha_de_nacimiento_empleado, pais_de_nacimiento_empleado, salario_empleado, score_piloto, nro_auto, puntaje_carrera, lesion=False, suplente=True):
         super().__init__(nombre_empleado, cedula_empleado, fecha_de_nacimiento_empleado, pais_de_nacimiento_empleado, salario_empleado)
         self._score_piloto = score_piloto
         self._nro_auto = nro_auto
@@ -27,18 +27,5 @@ class Piloto(Empleado):
     @puntaje_carrera.setter
     def puntaje_carrera(self, puntaje_carrera_nuevo):
         self._puntaje_carrera = puntaje_carrera_nuevo
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        
+    
